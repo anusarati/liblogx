@@ -11,7 +11,6 @@ import AppNav from "./components/AppNav.vue";
 import AppBlog from "./components/AppBlog.vue";
 import CreatePost from "./components/CreatePost.vue";
 import EditMenu from "./components/EditMenu.vue";
-import EditPost from "./components/EditPost.vue";
 import { mapActions } from "vuex";
 
 export default {
@@ -19,8 +18,7 @@ export default {
     AppNav,
     AppBlog,
     CreatePost,
-    EditMenu,
-    EditPost
+    EditMenu
   },
   methods: {
     ...mapActions(["loadPosts"])
@@ -33,11 +31,20 @@ export default {
       { path: "/", component: AppBlog },
       { path: "/create", component: CreatePost },
 
-      //{ path: "/edit/:id", component: EditPost, props: true },
-      { path: "/edit", component: EditMenu, children: [
-        // https://router.vuejs.org/guide/essentials/passing-props.html
-        { path: ":id", component: EditPost, props: true }
-      ] }
+      // { path: "/edit/:id", component: EditPost, props: true },
+      {
+        path: "/edit",
+        component: EditMenu,
+        children: [ {
+          path: ":id",
+          // https://vuejs.org/v2/guide/components-dynamic-async.html#Handling-Loading-State
+          component: () => ({
+            component: import("./components/EditPost.vue")
+          }),
+          // https://router.vuejs.org/guide/essentials/passing-props.html
+          props: true
+        } ]
+      }
     ]);
   }
 };
