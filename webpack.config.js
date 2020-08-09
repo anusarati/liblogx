@@ -5,6 +5,7 @@ let marked = require("marked");
 let { CleanWebpackPlugin } = require("clean-webpack-plugin");
 let htmlWebpackPlugin = require("html-webpack-plugin");
 let sanitizeHTML = require("sanitize-html");
+let FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -26,9 +27,9 @@ module.exports = {
             loader: "html-loader",
             options: {
               preprocessor: (content) => {
-                  return sanitizeHTML(content, {
-                    allowedTags: sanitizeHTML.defaults.allowedTags.concat(["h1","h2","img"])
-                  });
+                return sanitizeHTML(content, {
+                  allowedTags: sanitizeHTML.defaults.allowedTags.concat(["h1","h2","img"])
+                });
               }
             }
           },
@@ -52,8 +53,9 @@ module.exports = {
     new CleanWebpackPlugin(),
     new htmlWebpackPlugin({
       template: "./src/index.html",
-      favicon: "./src/favicon.ico"
+      cache: false
     }),
+    new FaviconsWebpackPlugin("./src/x.svg"),
     new VueLoaderPlugin()
   ],
   resolve: {

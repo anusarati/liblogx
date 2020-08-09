@@ -3,26 +3,12 @@ let Hapi = require("@hapi/hapi");
 let Inert = require("@hapi/inert");
 let fs = require("fs");
 
-let db = require("monk")(process.env.connectionString);
+let monk = require("monk");
+let db = monk(process.env.connectionString);
 let posts = db.get("posts");
 
+// please don't give an error when running the compiler without a callback
 let webpackCompiler = require("webpack")(require("./webpack.config.js"));
-let webpackCallback = function (err, stats) {
-  // https://webpack.js.org/api/node/#error-handling
-  if (err) {
-    console.error(err.stack || err);
-    if (err.details) {
-      console.error(err.details);
-    }
-    return;
-  }
-
-  // https://webpack.js.org/api/node/#statstostringoptions
-  console.log(stats.toString({
-    chunks: false,
-    colors: true
-  }));
-}
 
 let server = Hapi.server({
   port: 3000,
@@ -32,9 +18,60 @@ let server = Hapi.server({
 server.route({
     method: "GET",
     path: "/blog-posts",
-    handler: function (request, h) {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions
+    handler(request, h) {
+      // since this works, it seems that hapi resolves promises
       return posts.find();
     }
+});
+
+server.route({
+  method: "GET",
+  path: "/posts/{postID}",
+  handler(request, h) {
+    // https://nodejs.org/api/fs.html#fs_fs_promises_api
+    //let mdContent = await fs.promises.readFile(`posts/${request.params.postID}.md`);
+    return fs.promises.readFile(`posts/${request.params.postID}.md`);
+  }
+});
+
+server.route({
+  method: "POST",
+  path: "/posts/{postID}",
+  async handler(request, h) {
+    // https://hapi.dev/tutorials/expresstohapi/?lang=en_US#-parameters
+    let postID = request.params.postID;
+    posts.update(
+      { _id: monk.id(postID) },
+      // https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate
+      { $set: { Title: request.payload.Title },
+      $currentDate: { edited_on: true } }
+    );
+
+    await fs.promises.writeFile(`posts/${postID}.md`, request.payload.content);
+    webpackCompiler.run();
+    return h.redirect('/');
+  }
+});
+
+server.route({
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
+  method: "DELETE",
+  path: "/posts/{postID}",
+  async handler(request, h) {
+    let postID = request.params.postID;
+    posts.remove( { _id: monk.id(postID) } );
+
+    // https://nodejs.org/api/fs.html#fs_fspromises_unlink_path
+    await fs.promises.unlink(`posts/${postID}.md`);
+    webpackCompiler.run();
+    return h.response();
+  },
+  options: {
+    response: {
+      emptyStatusCode: 204
+    }
+  }
 });
 
 let init = async () => {
@@ -55,11 +92,13 @@ let init = async () => {
   //await server.register([getDate, Inert]);
   await server.register(Inert);
 
+  // https://hapi.dev/tutorials/servingfiles/?lang=en_US#-static-file-server
   server.route({
-    method: '*',
+    method: "GET",
     path: "/{param*}",
+    // https://hapi.dev/api/?v=19.2.0#-routeoptionshandler
     handler: {
-      directory: {
+      directory: { // directory handler from Inert
         path: "dist",
         redirectToSlash: true
       }
@@ -67,27 +106,29 @@ let init = async () => {
   });
 
   server.route({
+    method: "GET",
+    path: "/images/{image}",
+    handler: {
+      directory: {
+        path: "images"
+      }
+    }
+  });
+
+  server.route({
     method: "POST",
     path: "/create-post",
-    handler: function (request, h) {
-      posts.insert({ Title: request.payload.Title, date: new Date(), author: "Xingzhe" })
-      .then((post) => {
-        console.log(post);
-        // https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback
-        fs.writeFile(`posts/${post._id}.md`, request.payload.content, (err) => {
-            if (err) throw err;
-        });
-      })
-      .then(() => {
-        webpackCompiler.run(webpackCallback);
-      })
-      .catch(console.error);
+    async handler(request, h) {
+      let post = await posts.insert({ Title: request.payload.Title, date: new Date(), author: "Xingzhe" });
+
+      await fs.promises.writeFile(`posts/${post._id}.md`, request.payload.content);
+      webpackCompiler.run();
       return h.redirect('/');
     }
   });
 
   await server.start();
-  return `Server running on ${server.info.uri}`;
+  return `Server running on ${server.info.uri}\n${Date()}`;
 };
 
 process.on("unhandledRejection", (err) => {
@@ -96,6 +137,5 @@ process.on("unhandledRejection", (err) => {
 });
 
 // https://webpack.js.org/api/node/
-// .run() takes a callback
-webpackCompiler.run(webpackCallback);
+webpackCompiler.run();
 init().then(console.log);

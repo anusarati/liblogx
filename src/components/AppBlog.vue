@@ -2,11 +2,9 @@
 <template>
   <main>
     <BlogPost
-      v-for="post in blogPosts"
+      v-for="post in posts"
       :key="post._id"
-      :Title="post.Title"
-      :dateString="post.date"
-      :author="post.author"
+      :post="post"
       :mdFileName="`${post._id}.md`"
     />
   </main>
@@ -14,15 +12,14 @@
 
 <script>
 import BlogPost from "./BlogPost.vue";
+import { mapState } from "vuex";
 
 export default {
-  props: {
-    blogPosts: Array
-  },
+  computed: mapState(["posts"]),
   components: {
     BlogPost
   }
-}
+};
 </script>
 
 <style scoped>

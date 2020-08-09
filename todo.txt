@@ -2,4 +2,7 @@ not necessarily exhaustive
 for example, I think I'll remember to add CSS even without this text file
 
 users
-change favicon
+fix bug when going to a /edit/:id route before posts have loaded
+boom?
+ssr?
+hot?

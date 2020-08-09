@@ -1,15 +1,15 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link>
-    <router-link to="/post-creator">Create</router-link>
-    <router-link to="/post-editor">Edit</router-link>
+    <router-link to="/" exact>Home</router-link>
+    <router-link to="/create">Create</router-link>
+    <router-link to="/edit">Edit</router-link>
   </nav>
 </template>
 
 <script>
 export default {
 
-}
+};
 </script>
 
 <style scoped>

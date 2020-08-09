@@ -10,34 +10,37 @@
 import AppNav from "./components/AppNav.vue";
 import AppBlog from "./components/AppBlog.vue";
 import CreatePost from "./components/CreatePost.vue";
+import EditMenu from "./components/EditMenu.vue";
 import EditPost from "./components/EditPost.vue";
+import { mapActions } from "vuex";
 
 export default {
-  props: {
-    posts: Array
-  },
   components: {
     AppNav,
     AppBlog,
     CreatePost,
+    EditMenu,
     EditPost
   },
   methods: {
-    getBlogPosts: async function () {
-      // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-      let response = await fetch("/blog-posts");
-      return response.json();
-    }
+    ...mapActions(["loadPosts"])
   },
-  created: async function () {
-    let posts = await this.getBlogPosts();
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions
+  created() {
+    //let posts = await this.getBlogPosts();
+    this.loadPosts();
     this.$router.addRoutes([
-      { path: "/", component: AppBlog, props: { blogPosts: posts } },
-      { path: "/post-creator", component: CreatePost },
-      { path: "/post-editor", component: EditPost, props: { blogPosts: posts } }
+      { path: "/", component: AppBlog },
+      { path: "/create", component: CreatePost },
+
+      //{ path: "/edit/:id", component: EditPost, props: true },
+      { path: "/edit", component: EditMenu, children: [
+        // https://router.vuejs.org/guide/essentials/passing-props.html
+        { path: ":id", component: EditPost, props: true }
+      ] }
     ]);
   }
-}
+};
 </script>
 
 <style>

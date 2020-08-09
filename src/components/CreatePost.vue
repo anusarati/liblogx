@@ -2,19 +2,26 @@
   <div>
     <h2>Create Post</h2>
     <form action="/create-post" method="POST">
-      <label for="Title">Title</label>
-      <input id="Title" name="Title" required>
-      <label for="content">Content (you may use markdown)</label>
-      <textarea id="content" name="content" required></textarea>
+      <PostFields/>
+      <button @click="goBack" type="button">Cancel</button>
       <button type="submit">Post</button>
     </form>
   </div>
 </template>
 
 <script>
-export default {
+import PostFields from "./PostFields.vue";
 
-}
+export default {
+  components: {
+    PostFields
+  },
+  methods: {
+    goBack() {
+      this.$router.back();
+    }
+  }
+};
 </script>
 
 <style scoped>

@@ -2,8 +2,12 @@
   <article>
     <header>
       <h2>{{ Title }}</h2>
-      <time :datetime="date">{{ LocaleString }}</time>
-      <p>{{ author }}</p>
+      <p>{{ author }} <time :datetime="date">{{ LocaleString }}</time></p>
+
+      <!-- if edited_on is undefined and webpack uses development mode, this gives a warning
+      but this is supposed to not show up when edited_on is supposed to be undefined,
+      so it's working as intended besides the warning -->
+      <p v-if="edited_on">Edited on <time :datetime="edited_on">{{ EditionLocaleString }}</time></p>
       <!--<p>{{ mdFileName }}</p>-->
     </header>
   </article>
@@ -12,30 +16,34 @@
 <script>
 export default {
   props: {
-    Title: String,
-    dateString: String,
-    author: String,
+    post: Object,
     mdFileName: String
+  },
+  data() {
+    return {
+      ...this.post // post object may or may not have edited_on property
+    }
   },
   computed: {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
-    LocaleString: function () {
-      return (new Date(this.dateString)).toLocaleString();
+    LocaleString() {
+      return (new Date(this.date)).toLocaleString();
     },
-    date: function () {
-      return (new Date(this.dateString)).toISOString();
+    EditionLocaleString() {
+      return (new Date(this.edited_on)).toLocaleString();
     }
   },
-  created: function () {
+  created() {
+    // https://github.com/tc39/proposal-dynamic-import
     import(`../../posts/${this.mdFileName}`)
     .then((mdHTML) => {
       this.$el.insertAdjacentHTML("beforeend", mdHTML.default
       .replace(/<(\/?)h(\d)>/g, (match, p1, p2) => {
         return `<${p1}h${Math.min(Number(p2)+2, 6)}>`;
       }));
-    }).catch(console.log);
+    }).catch(console.error);
   }
-}
+};
 </script>
 
 <style scoped>

@@ -1,19 +1,57 @@
 <template>
   <div>
-    <h2>Edit (test)</h2>
-    <div v-for="post in blogPosts" :key="post._id" :Title="post.Title">
-      <p>{{ Title }}</p>
-      <button><img src="../delete.svg"></img></button>
-    </div>
+    <h2>Edit Post</h2>
+    <form :action="`/posts/${id}`" method="POST">
+      <PostFields :editPost="true" :id="id" :initialTitle="Title" @toggle="toggleSameness"/>
+      <button @click="goBack" type="button">Cancel</button>
+      <button type="submit" disabled>Save</button>
+    </form>
   </div>
 </template>
 
 <script>
+import PostFields from "./PostFields.vue";
+
 export default {
   props: {
-    blogPosts: Array
+    id: String // from route parameter
+  },
+  data() {
+    return {
+      same: true
+    }
+  },
+  computed: {
+    Title() {
+      return this.$store.getters.getPostByID(this.id).Title;
+    },
+    disabled() {
+      return this.same ? "disabled" : false;
+    }
+  },
+  watch: {
+    disabled() {
+      if (this.disabled) {
+        console.log("hello");
+        this.$el.querySelector("button[type='submit']").setAttribute("disabled",'');
+      } else {
+        console.log("hi");
+        this.$el.querySelector("button[type='submit']").removeAttribute("disabled");
+      }
+    }
+  },
+  methods: {
+    toggleSameness() {
+      this.same = !this.same;
+    },
+    goBack() {
+      this.$router.back();
+    }
+  },
+  components: {
+    PostFields
   }
-}
+};
 </script>
 
 <style scoped>
