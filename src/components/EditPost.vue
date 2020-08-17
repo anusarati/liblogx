@@ -32,10 +32,8 @@ export default {
   watch: {
     disabled() {
       if (this.disabled) {
-        console.log("hello");
         this.$el.querySelector("button[type='submit']").setAttribute("disabled",'');
       } else {
-        console.log("hi");
         this.$el.querySelector("button[type='submit']").removeAttribute("disabled");
       }
     }

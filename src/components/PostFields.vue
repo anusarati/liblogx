@@ -2,7 +2,8 @@
   <fieldset>
     <label for="Title">Title</label>
     <input id="Title" name="Title" v-model="Title" required>
-    <label for="content">Content{{ mayUseMarkdown }}</label>
+    <label for="content" v-if="!editPost">Content (you may use markdown)</label>
+    <label for="content" v-else>Content</label>
     <textarea id="content" name="content" v-model="content" required></textarea>
   </fieldset>
 </template>
@@ -26,7 +27,6 @@ export default {
   data() {
     return {
       Title: this.initialTitle,
-      mayUseMarkdown: this.editPost ? '' : " (you may use markdown)",
       initialContent: '',
       content: ''
     }

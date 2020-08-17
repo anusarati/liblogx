@@ -7,11 +7,17 @@ Vue.use(Vuex);
 // https://vuex.vuejs.org/
 export default new Vuex.Store({
   state: {
-    posts: []
+    posts: [],
   },
   getters: {
     getPostByID: (state) => (id) => {
       return state.posts.find(post => post._id == id);
+    },
+    guestPosts(state) {
+      return state.posts.filter(post => post.author != "Xingzhe");
+    },
+    postsByUser: (state) => (user) => {
+      return state.posts.filter(post => post.author == user);
     }
   },
   mutations: {
@@ -19,9 +25,6 @@ export default new Vuex.Store({
     setPosts(state, posts) {
       state.posts = posts;
     },
-    /*pushPost(state, post) {
-      state.posts.push(post);
-    },*/
     deletePost(state, id) {
       state.posts.splice(state.posts.findIndex(post => post._id == id), 1);
     }
@@ -29,9 +32,10 @@ export default new Vuex.Store({
   actions: {
     loadPosts({ commit }) {
       // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-      fetch("/blog-posts")
+      fetch("/posts")
       .then(response => response.json())
-      .then(posts => commit("setPosts", posts));
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Description
+      .then(posts => commit("setPosts", posts.sort((a, b) => b.date - a.date)));
     },
     deletePost({ commit }, id) {
       // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch

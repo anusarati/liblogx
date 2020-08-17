@@ -1,96 +1,39 @@
 require("dotenv").config();
 let Hapi = require("@hapi/hapi");
 let Inert = require("@hapi/inert");
-let fs = require("fs");
 
 let monk = require("monk");
-let db = monk(process.env.connectionString);
-let posts = db.get("posts");
+let BlogPlugin = require("./plugins/BlogPlugin.js");
 
-// please don't give an error when running the compiler without a callback
-let webpackCompiler = require("webpack")(require("./webpack.config.js"));
+// https://hapi.dev/api?v=20.0.0#-serveroptionstls
+// https://nodejs.org/api/tls.html#tls_tls_createsecurecontext_options
+// https://www.akadia.com/services/ssh_test_certificate.html
+// for development, do not use for production
+let fs = require("fs");
+let crt = fs.readFileSync("ssl.crt");
+let tlsOptions = {
+  ca: [crt],
+  cert: crt,
+  key: fs.readFileSync("ssl.key")
+};
+
 
 let server = Hapi.server({
-  port: 3000,
-  host: "localhost"
-});
-
-server.route({
-    method: "GET",
-    path: "/blog-posts",
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions
-    handler(request, h) {
-      // since this works, it seems that hapi resolves promises
-      return posts.find();
-    }
-});
-
-server.route({
-  method: "GET",
-  path: "/posts/{postID}",
-  handler(request, h) {
-    // https://nodejs.org/api/fs.html#fs_fs_promises_api
-    //let mdContent = await fs.promises.readFile(`posts/${request.params.postID}.md`);
-    return fs.promises.readFile(`posts/${request.params.postID}.md`);
-  }
-});
-
-server.route({
-  method: "POST",
-  path: "/posts/{postID}",
-  async handler(request, h) {
-    // https://hapi.dev/tutorials/expresstohapi/?lang=en_US#-parameters
-    let postID = request.params.postID;
-    posts.update(
-      { _id: monk.id(postID) },
-      // https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate
-      { $set: { Title: request.payload.Title },
-      $currentDate: { edited_on: true } }
-    );
-
-    await fs.promises.writeFile(`posts/${postID}.md`, request.payload.content);
-    webpackCompiler.run();
-    return h.redirect('/');
-  }
-});
-
-server.route({
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
-  method: "DELETE",
-  path: "/posts/{postID}",
-  async handler(request, h) {
-    let postID = request.params.postID;
-    posts.remove( { _id: monk.id(postID) } );
-
-    // https://nodejs.org/api/fs.html#fs_fspromises_unlink_path
-    await fs.promises.unlink(`posts/${postID}.md`);
-    webpackCompiler.run();
-    return h.response();
-  },
-  options: {
-    response: {
-      emptyStatusCode: 204
-    }
-  }
+  port: 443,
+  host: "localhost",
+  tls: tlsOptions
 });
 
 let init = async () => {
 
-  /*
-  let getDate = {
-    name: "getDate",
-    register: async function (server, options) {
-      let currentDate = () => {
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
-        // return (new Date()).toDateString();
+  await server.register([Inert, BlogPlugin, {
+    plugin: require("hapi-pulse"),
+    options: {
+      async postServerStop() {
+        await BlogPlugin.db.close();
       }
-
-      server.decorate("toolkit", "getDate", currentDate);
     }
-  }*/
-
-  //await server.register([getDate, Inert]);
-  await server.register(Inert);
+  }]);
 
   // https://hapi.dev/tutorials/servingfiles/?lang=en_US#-static-file-server
   server.route({
@@ -115,15 +58,58 @@ let init = async () => {
     }
   });
 
-  server.route({
-    method: "POST",
-    path: "/create-post",
-    async handler(request, h) {
-      let post = await posts.insert({ Title: request.payload.Title, date: new Date(), author: "Xingzhe" });
+  // https://router.vuejs.org/guide/essentials/history-mode.html
+  // duplicated routes in Vue app
+  for (let path of ["/register", "/login", "/terms", "/privacy-policy"]) {
+    server.route({
+      method: "GET",
+      path, // path: path
+      handler(request, h) {
+        return h.file("dist/index.html");
+      }
+    });
+  }
 
-      await fs.promises.writeFile(`posts/${post._id}.md`, request.payload.content);
-      webpackCompiler.run();
-      return h.redirect('/');
+  for (let path of ["/create", "/edit/{id?}"]) {
+    server.route({
+      method: "GET",
+      path,
+      handler(request, h) {
+        return h.file("dist/index.html");
+      },
+      options: {
+        auth: {
+          mode: "required"
+        }
+      }
+    });
+  }
+
+  server.route({
+    method: "GET",
+    path: "/key-menu",
+    handler(request, h) {
+      return h.file("dist/index.html");
+    },
+    options: {
+      auth: {
+        access: { scope: "Author" },
+        mode: "required"
+      }
+    }
+  });
+
+  server.route({
+    method: "GET",
+    path: "/i",
+    handler(request, h) {
+      return monk.id();
+    },
+    options: {
+      auth: {
+        access: { scope: "Author" },
+        mode: "required"
+      }
     }
   });
 
@@ -136,6 +122,4 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 
-// https://webpack.js.org/api/node/
-webpackCompiler.run();
 init().then(console.log);

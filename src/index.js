@@ -5,7 +5,7 @@ import App from "./App.vue";
 
 Vue.use(VueRouter);
 
-let router = new VueRouter();
+let router = new VueRouter({ mode: "history" });
 
 new Vue({
   el: "#App",

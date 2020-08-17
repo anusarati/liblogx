@@ -1,6 +1,4 @@
 not necessarily exhaustive
 for example, I think I'll remember to add CSS even without this text file
 
-users
-boom?
 hot?
