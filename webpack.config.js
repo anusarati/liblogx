@@ -7,7 +7,7 @@ let sanitizeHTML = require("sanitize-html");
 let FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  //mode: "development",
   entry: "./src/index.js",
   output: {
     filename: "[name].js",

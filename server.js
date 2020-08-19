@@ -7,21 +7,21 @@ let BlogPlugin = require("./plugins/BlogPlugin.js");
 
 // https://hapi.dev/api?v=20.0.0#-serveroptionstls
 // https://nodejs.org/api/tls.html#tls_tls_createsecurecontext_options
-// https://www.akadia.com/services/ssh_test_certificate.html
+// https://www.akadia.com/services/ssh_test_certificate.html should be ssl
 // for development, do not use for production
-let fs = require("fs");
+/*let fs = require("fs");
 let crt = fs.readFileSync("ssl.crt");
 let tlsOptions = {
   ca: [crt],
   cert: crt,
   key: fs.readFileSync("ssl.key")
-};
+};*/
 
 
 let server = Hapi.server({
-  port: 443,
+  port: 443/*,
   host: "localhost",
-  tls: tlsOptions
+  tls: tlsOptions*/
 });
 
 let init = async () => {
