@@ -4,7 +4,7 @@ let marked = require("marked");
 let { CleanWebpackPlugin } = require("clean-webpack-plugin");
 let htmlWebpackPlugin = require("html-webpack-plugin");
 let sanitizeHTML = require("sanitize-html");
-let FaviconsWebpackPlugin = require("favicons-webpack-plugin");
+//let FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
 module.exports = {
   //mode: "development",
@@ -62,9 +62,10 @@ module.exports = {
     new CleanWebpackPlugin(),
     new htmlWebpackPlugin({
       template: "./src/index.html",
+      favicon: "./src/x.svg",
       cache: false
     }),
-    new FaviconsWebpackPlugin("./src/x.svg"),
+    //new FaviconsWebpackPlugin("./src/x.svg"), doesn't work in production mode yet
     new VueLoaderPlugin()
   ],
   resolve: {

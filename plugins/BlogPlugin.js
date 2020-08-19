@@ -13,7 +13,7 @@ let webpackCompiler = require("webpack")(require("../webpack.config.js"));
 let runWebpackCompiler = require("util").promisify(webpackCompiler.run).bind(webpackCompiler);
 
 // run compiler without stopping server during development
-let readline = require("readline");
+/*let readline = require("readline");
 readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -23,7 +23,7 @@ readline.createInterface({
     .then(stats => console.log(stats.toString({ colors: true })))
     .catch(console.error);
   }
-});
+});*/
 
 module.exports.db = db;
 module.exports.plugin = {
