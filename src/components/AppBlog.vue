@@ -5,7 +5,7 @@
       v-for="post in posts"
       :key="post._id"
       :post="post"
-      :mdFileName="`${post._id}.md`"
+      :id="`${post._id}`"
     />
   </main>
   <main v-else>
@@ -13,7 +13,7 @@
       v-for="post in guestPosts"
       :key="post._id"
       :post="post"
-      :mdFileName="`${post._id}.md`"
+      :id="`${post._id}`"
     />
   </main>
 </template>
@@ -40,4 +40,12 @@ export default {
 </script>
 
 <style scoped>
+main {
+  border-top: 10px solid #dddddd;
+  border-bottom: 10px solid #dddddd;
+}
+
+article {
+  border-bottom: 5px solid #42b983;
+}
 </style>

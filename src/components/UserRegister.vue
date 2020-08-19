@@ -6,11 +6,11 @@
     <input type="password" id="password" name="password" v-model="password">
     <label for="key">Registration key</label>
     <input id="key" name="key">
-    <button type="button" @click="generatePassword">Generate password (and copy to clipboard)</button>
-    <p v-if="copySuccessful==1">Copied to clipboard</p>
-    <p v-else-if="copySuccessful==-1">Copy failed</p>
-    <button type="button" @click="goBack">Cancel</button>
-    <button type="submit">Register</button>
+    <button type="button" @click="generatePassword" id="generate-password" class="two-col">Generate password (and copy to clipboard)</button>
+    <button type="button" @click="goBack" id="cancel">Cancel</button>
+    <button type="submit" id="register">Register</button>
+    <p v-if="copySuccessful==1" class="two-col center">Copied to clipboard</p>
+    <p v-else-if="copySuccessful==-1" class="two-col center">Copy failed</p>
   </form>
 </template>
 
@@ -64,10 +64,9 @@ export default {
   },
   methods: {
     async generatePassword() {
-      let i = await fetch("/i").then(response => response.text());
       // https://developer.mozilla.org/en-US/docs/Web/API/Performance
-      this.$password = this.$password ? process(this.$password) : process(Date()+JSON.stringify(performance.toJSON()));
-      navigator.clipboard.writeText(this.$password).then(
+      this.password = process(Date()+JSON.stringify(performance.toJSON()));
+      navigator.clipboard.writeText(this.password).then(
         () => { this.copySuccessful = 1; },
         () => {
           this.copySuccessful = -1;
@@ -83,4 +82,31 @@ export default {
 </script>
 
 <style scoped>
+form {
+  /* https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids
+  https://css-tricks.com/snippets/css/complete-guide-grid/ */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  height: 1rem;
+  gap: 10px;
+}
+
+/* form, input, button { font-size: 1.25rem; } */
+
+#generate-password {
+  margin: 10px 0px 0px;
+}
+
+#cancel, #register {
+  padding: 10px;
+}
+
+.two-col {
+  grid-column: 1 / -1;
+}
+
+.center {
+  text-align: center;
+}
 </style>

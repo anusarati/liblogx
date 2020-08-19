@@ -2,9 +2,8 @@
   <fieldset>
     <label for="Title">Title</label>
     <input id="Title" name="Title" v-model="Title" required>
-    <label for="content" v-if="!editPost">Content (you may use markdown)</label>
-    <label for="content" v-else>Content</label>
-    <textarea id="content" name="content" v-model="content" required></textarea>
+    <label for="content">Content</label>
+    <textarea id="content" name="content" v-model="content" @keydown="interceptTab" required></textarea>
   </fieldset>
 </template>
 
@@ -40,11 +39,20 @@ export default {
     async getMDContent(id) {
       let response = await fetch(`/posts/${id}`);
       return response.text();
+    },
+    interceptTab(event) {
+      if (event.key == "Tab") {
+        event.preventDefault();
+        // based off of code by Taufik Nurrohman https://jsfiddle.net/tovic/2wAzx/
+        let { selectionStart, selectionEnd } = event.target;
+        this.content = this.content.substring(0, selectionStart) + '\t' + this.content.substring(selectionEnd);
+      }
     }
   },
   async mounted() {
     if (this.editPost) {
-      this.initialContent = await this.getMDContent(this.id);
+      // remove \r so sameness check works
+      this.initialContent = await this.getMDContent(this.id).then(mdContent => mdContent.replaceAll(/\r/g, ''));
       this.content = this.initialContent;
       this.$watch("same", function() {
         this.$emit("toggle");
@@ -55,4 +63,16 @@ export default {
 </script>
 
 <style scoped>
+fieldset {
+  display: grid;
+  grid-column: 1 / -1;
+}
+
+textarea {
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/resize */
+  resize: vertical;
+  height: 50vh;
+  font-family: "Source Sans Pro", Arial;
+  font-size: 2rem;
+}
 </style>

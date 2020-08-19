@@ -12,6 +12,19 @@ let webpackCompiler = require("webpack")(require("../webpack.config.js"));
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind#Syntax
 let runWebpackCompiler = require("util").promisify(webpackCompiler.run).bind(webpackCompiler);
 
+// run compiler without stopping server during development
+let readline = require("readline");
+readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+}).on("line", (input) => {
+  if (input == "r") {
+    runWebpackCompiler()
+    .then(stats => console.log(stats.toString({ colors: true })))
+    .catch(console.error);
+  }
+});
+
 module.exports.db = db;
 module.exports.plugin = {
   name: "BlogPlugin",
@@ -51,6 +64,34 @@ module.exports.plugin = {
       options: {
         auth: {
           mode: "required"
+        }
+      }
+    });
+
+    server.route({
+      method: "POST",
+      path: "/upload",
+      handler(request, h) {
+        console.log(request.payload);
+        if (request.payload.img.length) {
+          for (let image of request.payload.img) {
+            fs.promises.rename(image.path, image.path.replace(/\\([^\\]*)$/, `\\${image.filename}`));
+          }
+        } else {
+          let image = request.payload.img;
+          fs.promises.rename(image.path, image.path.replace(/\\([^\\]*)$/, `\\${image.filename}`));
+        }
+        return h.redirect('/create');
+      },
+      options: {
+        auth: {
+          mode: "required"
+        },
+        payload: {
+          maxBytes: 1e7,
+          multipart: true,
+          output: "file",
+          uploads: "images"
         }
       }
     });

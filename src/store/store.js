@@ -32,7 +32,7 @@ export default new Vuex.Store({
   actions: {
     loadPosts({ commit }) {
       // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-      fetch("/posts")
+      return fetch("/posts")
       .then(response => response.json())
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Description
       .then(posts => commit("setPosts", posts.sort((a, b) => b.date - a.date)));

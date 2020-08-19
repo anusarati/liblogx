@@ -20,4 +20,20 @@ export default {
 </script>
 
 <style scoped>
+form {
+  /* https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids
+  https://css-tricks.com/snippets/css/complete-guide-grid/ */
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  height: 1rem;
+  gap: 10px;
+}
+
+form, input, button { font-size: 1.25rem; }
+
+button {
+  padding: 10px;
+}
 </style>

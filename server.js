@@ -58,9 +58,19 @@ let init = async () => {
     }
   });
 
+  server.route({
+    method: "GET",
+    path: "/highlight/{param*}",
+    handler: {
+      directory: {
+        path: "highlight"
+      }
+    }
+  });
+
   // https://router.vuejs.org/guide/essentials/history-mode.html
   // duplicated routes in Vue app
-  for (let path of ["/register", "/login", "/terms", "/privacy-policy"]) {
+  for (let path of ["/guest", "/register", "/login", "/terms", "/privacy-policy"]) {
     server.route({
       method: "GET",
       path, // path: path
@@ -70,7 +80,7 @@ let init = async () => {
     });
   }
 
-  for (let path of ["/create", "/edit/{id?}"]) {
+  for (let path of ["/create", "/upload", "/edit/{id?}"]) {
     server.route({
       method: "GET",
       path,

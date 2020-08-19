@@ -5,7 +5,7 @@
       <label for="key">Content</label>
       <input id="content" name="content" v-model="content">
       <label for="uses">Uses</label>
-      <input type="number" id="uses" name="uses" v-model="uses" placeholder="1">
+      <input type="number" id="uses" name="uses" v-model="uses" placeholder="1" min="1">
       <button type="button" @click="generate">Generate key</button>
       <button type="submit">Save</button>
     </form>
@@ -70,7 +70,11 @@ export default {
       this.content = process(i);
     },
     async updateKeyList() {
-      this.keys = await fetch("/reg-keys").then(response => response.json());
+      window.setTimeout(
+        async () => {
+          this.keys = await fetch("/reg-keys").then(response => response.json());
+        }, 500
+      );
     }
   },
   async created() {

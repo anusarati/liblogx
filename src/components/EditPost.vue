@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="edit-view">
     <h2>Edit Post</h2>
     <form :action="`/posts/${id}`" method="POST">
-      <PostFields :editPost="true" :id="id" :initialTitle="Title" @toggle="toggleSameness"/>
+      <PostFields :editPost="true" :id="id" :key="id" :initialTitle="Title" @toggle="toggleSameness"/>
       <button @click="goBack" type="button">Cancel</button>
       <button type="submit" disabled>Save</button>
     </form>
@@ -53,4 +53,19 @@ export default {
 </script>
 
 <style scoped>
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+button {
+  padding: 10px;
+}
+
+button:disabled {
+  border-color: #4f5959;
+  color: #4f5959;
+  border-width: 2px;
+  background-color: transparent;
+}
 </style>

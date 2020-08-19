@@ -8,9 +8,9 @@ Vue.use(VueRouter);
 let router = new VueRouter({ mode: "history" });
 
 new Vue({
+  store,
+  router,
   el: "#App",
   template: "<App/>",
-  components: { App },
-  store,
-  router
+  components: { App }
 });

@@ -24,4 +24,12 @@ export default {
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+  color: #304455;
+  padding: 10px;
+  margin: 10px;
+}
+
+a:hover { color: #42b983; }
 </style>
