@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anusarati/perweb.git"
+    "url": "git+https://github.com/anusarati/liblogx.git"
   },
   "author": "Xingzhe Li",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/anusarati/perweb/issues"
+    "url": "https://github.com/anusarati/liblogx/issues"
   },
-  "homepage": "https://github.com/anusarati/perweb#readme",
+  "homepage": "https://github.com/anusarati/liblogx#readme",
   "dependencies": {
     "@hapi/boom": "^9.1.0",
     "@hapi/cookie": "^11.0.1",
