@@ -7,6 +7,7 @@ let sanitizeHTML = require("sanitize-html");
 
 module.exports = {
   //mode: "development",
+  mode: "production",
   entry: "./src/index.js",
   output: {
     filename: "[name].js",

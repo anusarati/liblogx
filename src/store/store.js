@@ -35,7 +35,7 @@ export default new Vuex.Store({
       return fetch("/posts")
       .then(response => response.json())
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Description
-      .then(posts => commit("setPosts", posts.sort((a, b) => b.date - a.date)));
+      .then(posts => commit("setPosts", posts.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))));
     },
     deletePost({ commit }, id) {
       // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
