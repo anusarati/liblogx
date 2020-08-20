@@ -59,6 +59,7 @@ module.exports.plugin = {
 
         await fs.promises.writeFile(`posts/${post._id}.md`, request.payload.content);
         await runWebpackCompiler();
+        if (request.auth.credentials.username != "Xingzhe") return h.redirect("/guest");
         return h.redirect('/');
       },
       options: {
