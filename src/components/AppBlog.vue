@@ -47,7 +47,6 @@ main {
 
 article {
   border-bottom: 5px solid #42b983;
-  padding: 10px;
   font-size: 1.25rem;
 }
 </style>

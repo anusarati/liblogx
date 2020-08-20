@@ -111,4 +111,9 @@ article img {
   max-width: 1000px;
   max-height: 1000px;
 }
+
+pre {
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/white-space */
+  white-space: pre-wrap;
+}
 </style>
