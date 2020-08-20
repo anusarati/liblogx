@@ -40,7 +40,10 @@ module.exports = {
             options: {
               preprocessor: (content) => {
                 return sanitizeHTML(content, {
-                  allowedTags: sanitizeHTML.defaults.allowedTags.concat(["h1","h2","img"])
+                  allowedTags: sanitizeHTML.defaults.allowedTags.concat(["h1","h2","img"]),
+                  allowedAttributes: { ...sanitizeHTML.defaults.allowedAttributes,
+                    img: ["src", "alt"]
+                  }
                 });
               }
             }

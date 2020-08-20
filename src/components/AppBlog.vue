@@ -2,7 +2,7 @@
 <template>
   <main v-if="homeOrGuest=='home'">
     <BlogPost
-      v-for="post in posts"
+      v-for="post in postsByUser('Xingzhe')"
       :key="post._id"
       :post="post"
       :id="`${post._id}`"
