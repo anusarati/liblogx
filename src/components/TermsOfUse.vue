@@ -12,4 +12,7 @@ export default {
 </script>
 
 <style scoped>
+p {
+  font-size: 1.25rem;
+}
 </style>
