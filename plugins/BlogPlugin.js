@@ -127,12 +127,6 @@ module.exports.plugin = {
         // https://hapi.dev/tutorials/expresstohapi/?lang=en_US#-parameters
         let postID = request.pre.postID;
         let post = await posts.findOne({ _id: postID});
-        let credentials = request.auth.credentials;
-        if (credentials.scope != "Author") {
-          if (post.author != credentials.username) {
-            return Boom.unauthorized("session does not have enough permission");
-          }
-        }
         posts.update(
           { _id: monk.id(postID) },
           // https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate
@@ -142,6 +136,7 @@ module.exports.plugin = {
 
         await fs.promises.writeFile(`posts/${postID}.md`, request.payload.content);
         await runWebpackCompiler();
+        if (request.auth.credentials.username != "Xingzhe") return h.redirect("/guest");
         return h.redirect('/');
       }
     });
