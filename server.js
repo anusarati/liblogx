@@ -19,14 +19,19 @@ let tlsOptions = {
 
 
 let server = Hapi.server({
-  port: 443/*,
-  host: "localhost",
+  port: 80,
+  state: {
+    isSecure: false // does not require HTTPS or localhost-only connection
+  }
+  //port: 443,
+  /*host: "localhost",
   tls: tlsOptions*/
 });
 
 let init = async () => {
 
-  await server.register([Inert, BlogPlugin, {
+  await server.register([Inert, BlogPlugin, require("./plugins/RateLimiterPlugin.js"),
+  {
     plugin: require("hapi-pulse"),
     options: {
       async postServerStop() {

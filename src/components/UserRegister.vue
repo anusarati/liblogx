@@ -2,7 +2,7 @@
   <form action="/register" method="POST">
     <label for="username">Username</label>
     <input id="username" name="username">
-    <label for="password">Password</label>
+    <label for="password">Password (do not reuse another password if you're using an HTTP connection)</label>
     <input type="password" id="password" name="password" v-model="password">
     <label for="key">Registration key</label>
     <input id="key" name="key">

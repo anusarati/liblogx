@@ -32,8 +32,12 @@ module.exports.plugin = {
     server.auth.default({ strategy: "session", mode: "optional" });
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Restrict_access_to_cookies
-    server.state("vue-scope", { isHttpOnly: false });
-    server.state("user", { isHttpOnly: false });
+    server.state("vue-scope", {
+      isHttpOnly: false
+    });
+    server.state("user", {
+      isHttpOnly: false
+    });
 
     server.route({
       method: "POST",

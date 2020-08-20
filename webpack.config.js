@@ -4,7 +4,6 @@ let marked = require("marked");
 let { CleanWebpackPlugin } = require("clean-webpack-plugin");
 let htmlWebpackPlugin = require("html-webpack-plugin");
 let sanitizeHTML = require("sanitize-html");
-//let FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
 module.exports = {
   //mode: "development",
@@ -65,12 +64,14 @@ module.exports = {
       favicon: "./src/x.svg",
       cache: false
     }),
-    //new FaviconsWebpackPlugin("./src/x.svg"), doesn't work in production mode yet
     new VueLoaderPlugin()
   ],
   resolve: {
     alias: {
       vue: path.resolve(__dirname, "node_modules/vue/dist/vue.esm.js")
     }
+  },
+  optimization: {
+    minimize: false // until terser-webpack-plugin uses at least terser@5.2.0
   }
 };

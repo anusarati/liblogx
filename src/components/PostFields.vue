@@ -45,7 +45,15 @@ export default {
         event.preventDefault();
         // based off of code by Taufik Nurrohman https://jsfiddle.net/tovic/2wAzx/
         let { selectionStart, selectionEnd } = event.target;
-        this.content = this.content.substring(0, selectionStart) + '\t' + this.content.substring(selectionEnd);
+        if (selectionEnd != selectionStart) {
+          // indents lines like a text editor
+          this.content = this.content.substring(0, selectionStart)
+          + this.content.substring(selectionStart, selectionEnd).replaceAll(/^.*$/gm, "\t$&")
+          + this.content.substring(selectionEnd);
+        }
+        else {
+          this.content = this.content.substring(0, selectionStart) + '\t' + this.content.substring(selectionEnd);
+        }
       }
     }
   },

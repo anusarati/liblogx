@@ -72,7 +72,6 @@ module.exports.plugin = {
       method: "POST",
       path: "/upload",
       handler(request, h) {
-        console.log(request.payload);
         if (request.payload.img.length) {
           for (let image of request.payload.img) {
             fs.promises.rename(image.path, image.path.replace(/\\([^\\]*)$/, `\\${image.filename}`));

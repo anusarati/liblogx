@@ -2,6 +2,7 @@
   <footer>
     <router-link to="/terms">Terms of Use</router-link>
     <router-link to="/privacy-policy">Privacy Policy</router-link>
+    <a href="https://github.com/anusarati/liblogx" target="_blank">GitHub repository</a>
   </footer>
 </template>
 

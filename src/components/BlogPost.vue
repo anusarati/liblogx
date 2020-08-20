@@ -66,12 +66,12 @@ export default {
     // https://github.com/tc39/proposal-dynamic-import
     import(`../../posts/${this.id}.md`)
     .then((mdModule) => {
-        this.content = this.postHTML = mdModule.default
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_function_as_a_parameter
-        .replace(/<(\/?)h(\d)>/g, (match, p1, p2) => {
-          return `<${p1}h${Math.min(Number(p2)+2, 6)}>`;
-        });
-      })
+      this.content = this.postHTML = mdModule.default
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_function_as_a_parameter
+      .replace(/<(\/?)h(\d)>/g, (match, p1, p2) => {
+        return `<${p1}h${Math.min(Number(p2)+2, 6)}>`;
+      });
+    })
     .then(() => {
       document.querySelectorAll("pre code").forEach(codeblock=>hljs.highlightBlock(codeblock));
     }).catch(console.error);
@@ -100,5 +100,15 @@ button, button:hover, button:focus, button:active {
 
 button:hover, button:focus, button:active {
   border-bottom-style: double;
+}
+</style>
+
+<style>
+article img {
+  /* https://css-tricks.com/centering-css-complete-guide/#horizontal-block */
+  display: block;
+  margin: 0 auto;
+  max-width: 1000px;
+  max-height: 1000px;
 }
 </style>
