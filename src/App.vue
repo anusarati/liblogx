@@ -1,7 +1,8 @@
 <template>
   <div id="App">
     <h1>Xingzhe Li's Blog</h1>
-    <AppNav :vue_scope="vue_scope"/>
+    <p>Thanks to Mozilla for their documentation and Firefox for working</p>
+    <AppNav/>
     <router-view></router-view>
     <AppFooter/>
   </div>
@@ -31,14 +32,6 @@ export default {
     UserRegister,
     UserLogin
   },
-  data() {
-    return {
-      // https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Writing_a_regular_expression_pattern
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining#Description
-      ...document.cookie.match(/vue-scope=(?<vue_scope>.*); user=(?<user>.*)/)?.groups
-    }
-  },
   methods: {
     ...mapActions(["loadPosts"])
   },
@@ -47,7 +40,6 @@ export default {
       this.$router.addRoutes([{
         path: "/edit",
         component: EditMenu,
-        props: { user: this.user },
         children: [{
           path: ":id",
           // https://vuejs.org/v2/guide/components-dynamic-async.html#Handling-Loading-State
@@ -78,6 +70,10 @@ export default {
 body { font-family: "Source Sans Pro", Arial; }
 
 h1, h2, h3, h4 { color: #273849; }
+
+h1 + p {
+  margin-top: -10px;
+}
 
 h5, h6 { color: #304455 }
 
@@ -110,6 +106,6 @@ button:disabled {
 #App {
   min-height: 100vh;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto auto auto 1fr auto;
 }
 </style>

@@ -3,7 +3,6 @@ let db = monk(process.env.connectionString);
 let users = db.get("users");
 let keys = db.get("registration keys");
 let bcrypt = require("bcrypt");
-let Boom = require("@hapi/boom");
 
 let Joi = require("joi");
 
@@ -38,6 +37,10 @@ module.exports.plugin = {
     server.state("user", {
       isHttpOnly: false
     });
+    server.state("auth_error", {
+      isHttpOnly: false,
+      ttl: 1000
+    });
 
     server.route({
       method: "POST",
@@ -47,7 +50,8 @@ module.exports.plugin = {
         // https://auth0.com/blog/hapijs-authentication-secure-your-api-with-json-web-tokens/#Creating-Users
         let result = await users.findOne({ username });
         if (result) {
-          return Boom.badRequest("Username taken");
+          h.state("auth_error", "username_taken");
+          return h.redirect("/register");
         }
         result = await keys.findOne({ content: key });
         if (result) {
@@ -66,7 +70,8 @@ module.exports.plugin = {
           h.state("user", username);
           return h.redirect('/');
         } else {
-          return Boom.unauthorized("Invalid registration key");
+          h.state("auth_error", "invalid_registration_key");
+          return h.redirect("/register");
         }
       },
       options: {
@@ -94,10 +99,12 @@ module.exports.plugin = {
             h.state("user", username);
             return h.redirect('/');
           } else {
-            return Boom.badRequest("Password mismatch");
+            h.state("auth_error", "password_mismatch");
+            return h.redirect("/login");
           }
         } else {
-          return Boom.badRequest("Did not find user with username");
+          h.state("auth_error", "did_not_find_user_with_username");
+          return h.redirect("/login");
         }
       },
       options: {

@@ -1,17 +1,20 @@
 <template>
-  <form action="/register" method="POST">
-    <label for="username">Username</label>
-    <input id="username" name="username">
-    <label for="password">Password (do not reuse another password if you're using an HTTP connection)</label>
-    <input type="password" id="password" name="password" v-model="password">
-    <label for="key">Registration key</label>
-    <input id="key" name="key">
-    <button type="button" @click="generatePassword" id="generate-password" class="two-col">Generate password (and copy to clipboard)</button>
-    <button type="button" @click="goBack" id="cancel">Cancel</button>
-    <button type="submit" id="register">Register</button>
-    <p v-if="copySuccessful==1" class="two-col center">Copied to clipboard</p>
-    <p v-else-if="copySuccessful==-1" class="two-col center">Copy failed</p>
-  </form>
+  <div>
+    <ErrorComponent v-if="$store.state.auth_error">{{ $store.getters.getFormattedCookieValue("auth_error") }}</ErrorComponent>
+    <form action="/register" method="POST">
+      <label for="username">Username</label>
+      <input id="username" name="username">
+      <label for="password">Password (do not reuse a password from somewhere else if you're using an HTTP connection)</label>
+      <input type="password" id="password" name="password" v-model="password">
+      <label for="key">Registration key</label>
+      <input id="key" name="key">
+      <button type="button" @click="generatePassword" id="generate-password" class="two-col">Generate password (and copy to clipboard)</button>
+      <button type="button" @click="goBack" id="cancel">Cancel</button>
+      <button type="submit" id="register">Register</button>
+      <p v-if="copySuccessful==1" class="two-col center">Copied to clipboard</p>
+      <p v-else-if="copySuccessful==-1" class="two-col center">Copy failed</p>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -55,6 +58,8 @@ function process(i) {
   return i;
 }
 
+import ErrorComponent from "./ErrorComponent.vue";
+
 export default {
   data() {
     return {
@@ -77,6 +82,13 @@ export default {
     goBack() {
       this.$router.back();
     }
+  },
+  components: {
+    ErrorComponent
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.$store.state.auth_error) this.$store.commit("eraseAuthError");
+    next();
   }
 };
 </script>

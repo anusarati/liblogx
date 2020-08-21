@@ -1,20 +1,32 @@
 <template>
-  <form action="/login" method="POST">
-    <label for="username">Username</label>
-    <input id="username" name="username">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password">
-    <button type="button" @click="goBack">Cancel</button>
-    <button type="submit">Login</button>
-  </form>
+  <div>
+    <ErrorComponent v-if="$store.state.auth_error">{{ $store.getters.getFormattedCookieValue("auth_error") }}</ErrorComponent>
+    <form action="/login" method="POST">
+      <label for="username">Username</label>
+      <input id="username" name="username">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password">
+      <button type="button" @click="goBack">Cancel</button>
+      <button type="submit">Login</button>
+    </form>
+  </div>
 </template>
 
 <script>
+import ErrorComponent from "./ErrorComponent.vue";
+
 export default {
   methods: {
     goBack() {
       this.$router.goBack();
     }
+  },
+  components: {
+    ErrorComponent
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.$store.state.auth_error) this.$store.commit("eraseAuthError");
+    next();
   }
 };
 </script>

@@ -47,9 +47,16 @@ export default {
         let { selectionStart, selectionEnd } = event.target;
         if (selectionEnd != selectionStart) {
           // indents lines like a text editor
-          this.content = this.content.substring(0, selectionStart)
-          + this.content.substring(selectionStart, selectionEnd).replaceAll(/^.*$/gm, "\t$&")
-          + this.content.substring(selectionEnd);
+          try {
+            this.content = this.content.substring(0, selectionStart)
+            + this.content.substring(selectionStart, selectionEnd).replaceAll(/^.*$/gm, "\t$&")
+            + this.content.substring(selectionEnd);
+          } catch {
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#Avoiding_user_agent_detection
+            this.content = this.content.substring(0, selectionStart)
+            + this.content.substring(selectionStart, selectionEnd).replace(/^.*$/gm, "\t$&")
+            + this.content.substring(selectionEnd);
+          }
         }
         else {
           this.content = this.content.substring(0, selectionStart) + '\t' + this.content.substring(selectionEnd);
@@ -60,7 +67,11 @@ export default {
   async mounted() {
     if (this.editPost) {
       // remove \r so sameness check works
-      this.initialContent = await this.getMDContent(this.id).then(mdContent => mdContent.replaceAll(/\r/g, ''));
+      try {
+        this.initialContent = await this.getMDContent(this.id).then(mdContent => mdContent.replaceAll(/\r/g, ''));
+      } catch {
+        this.initialContent = await this.getMDContent(this.id).then(mdContent => mdContent.replace(/\r/g, ''));
+      }
       this.content = this.initialContent;
       this.$watch("same", function() {
         this.$emit("toggle");
@@ -82,5 +93,10 @@ textarea {
   height: 50vh;
   font-family: "Source Sans Pro", Arial;
   font-size: 2rem;
+}
+
+input, textarea {
+  box-sizing: border-box;
+  width: 100%;
 }
 </style>

@@ -3,8 +3,8 @@
     <!-- https://router.vuejs.org/api/#exact -->
     <router-link to="/" exact>Home</router-link>
     <router-link to="/guest">Guest</router-link>
-    <router-link to="/key-menu" v-if="vue_scope=='Author'">Key Menu</router-link>
-    <span v-if="vue_scope" class="loggedIn">
+    <router-link to="/key-menu" v-if="vueScope=='Author'">Key Menu</router-link>
+    <span v-if="vueScope" class="loggedIn">
       <router-link to="/create">Create</router-link>
       <router-link to="/edit" id="edit-link">Edit</router-link>
       <router-link to="/upload">Upload Image(s)</router-link>
@@ -18,13 +18,13 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
-  props: {
-    vue_scope: {
-      type: String,
-      required: false
-    }
-  }
+  // https://vuex.vuejs.org/guide/state.html#the-mapstate-helper
+  computed: mapState({
+    vueScope: "vue-scope"
+  })
 };
 </script>
 

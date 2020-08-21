@@ -5,25 +5,28 @@ let db = UsersPlugin.db;
 let posts = db.get("posts");
 let Boom = require("@hapi/boom");
 
+let webpackConfig = require("../webpack.config.js");
 // https://webpack.js.org/api/node/
 // let webpack = require("webpack");
-// let webpackCompiler = webpack(require("./webpack.config.js"));
-let webpackCompiler = require("webpack")(require("../webpack.config.js"));
+// let webpackCompiler = webpack(webpackConfig);
+let webpackCompiler = require("webpack")(webpackConfig);
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind#Syntax
 let runWebpackCompiler = require("util").promisify(webpackCompiler.run).bind(webpackCompiler);
 
 // run compiler without stopping server during development
-/*let readline = require("readline");
-readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-}).on("line", (input) => {
-  if (input == "r") {
-    runWebpackCompiler()
-    .then(stats => console.log(stats.toString({ colors: true })))
-    .catch(console.error);
-  }
-});*/
+if (webpackConfig.mode == "development") {
+  let readline = require("readline");
+  readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  }).on("line", (input) => {
+    if (input == "r") {
+      runWebpackCompiler()
+      .then(stats => console.log(stats.toString({ colors: true })))
+      .catch(console.error);
+    }
+  });
+}
 
 module.exports.db = db;
 module.exports.plugin = {

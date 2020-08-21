@@ -27,12 +27,6 @@ import deleteIcon from "../delete.svg";
 import { mapState, mapActions } from "vuex";
 
 export default {
-  props: {
-    user: {
-      type: String,
-      required: false
-    }
-  },
   data() {
     return {
       deleteIcon
@@ -42,7 +36,7 @@ export default {
     postsByUser() {
       return this.$store.getters.postsByUser(this.user);
     },
-    ...mapState(["posts"]),
+    ...mapState(["posts", "user"])
   },
   methods: mapActions(["deletePost"])
 };
@@ -69,6 +63,7 @@ li {
 
 li button {
   box-sizing: content-box;
+  width: 2rem;
   height: 100%;
   padding: 0px;
   border: none;
