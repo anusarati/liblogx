@@ -1,6 +1,5 @@
 {
   "name": "liblogx",
-  "version": "1.0.1",
   "description": "personal blog",
   "main": "server.js",
   "scripts": {
