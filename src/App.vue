@@ -68,6 +68,7 @@ export default {
       { path: "/register", component: UserRegister },
       { path: "/login", component: UserLogin }
     ]);
+    window.setInterval(this.loadPosts, 60e3);
   }
 };
 </script>

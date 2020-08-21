@@ -76,6 +76,6 @@ module.exports = {
     }
   },
   optimization: {
-    minimize: false // until terser-webpack-plugin uses at least terser@5.2.0
+    minimize: false // until npm release of terser-webpack-plugin uses at least terser@5.2.0
   }
 };
