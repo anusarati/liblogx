@@ -1,6 +1,6 @@
 <template>
   <div id="App">
-    <h1>Xingzhe Li's Blog</h1>
+    <h1>{{ $t("heading") }}</h1>
     <p>Thanks to Mozilla for their documentation and Firefox for working</p>
     <AppNav/>
     <router-view></router-view>
