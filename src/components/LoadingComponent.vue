@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import lx from "../lx.svg";
+import lx from "../lx.png";
 
 export default {
   data() {

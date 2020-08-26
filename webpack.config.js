@@ -65,7 +65,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new htmlWebpackPlugin({
       template: "./src/index.html",
-      favicon: "./src/x.svg",
+      favicon: "./src/x.ico",
       cache: false
     }),
     new VueLoaderPlugin()

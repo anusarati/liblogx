@@ -1,6 +1,6 @@
 # liblogx
 
-![logo](/src/x.svg)
+![logo](/src/x.ico)
 
 Personal blog
 

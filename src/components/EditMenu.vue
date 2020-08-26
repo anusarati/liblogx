@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import deleteIcon from "../delete.svg";
+import deleteIcon from "../delete.png";
 import { mapState, mapActions } from "vuex";
 
 export default {
