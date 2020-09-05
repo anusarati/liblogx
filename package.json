@@ -31,7 +31,7 @@
     "html-webpack-plugin": "^4.3.0",
     "joi": "^17.2.1",
     "markdown-loader": "^5.1.0",
-    "monk": "^7.3.1",
+    "monk": "^7.3.2",
     "rate-limiter-flexible": "^2.1.10",
     "sanitize-html": "^1.27.3",
     "vue": "^2.6.12",
@@ -40,7 +40,7 @@
     "vue-router": "^3.4.3",
     "vue-template-compiler": "^2.6.12",
     "vuex": "^3.5.1",
-    "webpack": "^5.0.0-beta.28"
+    "webpack": "^5.0.0-beta.29"
   },
   "devDependencies": {},
   "optionalDependencies": {

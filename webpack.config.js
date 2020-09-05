@@ -74,8 +74,5 @@ module.exports = {
     alias: {
       vue: path.resolve(__dirname, "node_modules/vue/dist/vue.esm.js")
     }
-  },
-  optimization: {
-    minimize: false // until npm release of terser-webpack-plugin uses at least terser@5.2.0
   }
 };
