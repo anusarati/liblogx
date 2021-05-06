@@ -33,7 +33,7 @@
     "markdown-loader": "^5.1.0",
     "monk": "^7.3.2",
     "rate-limiter-flexible": "^2.1.10",
-    "sanitize-html": "^1.27.3",
+    "sanitize-html": "^2.3.2",
     "vue": "^2.6.12",
     "vue-i18n": "^8.21.0",
     "vue-loader": "^15.9.3",
