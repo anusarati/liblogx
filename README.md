@@ -31,7 +31,7 @@ This is a full-stack blog website made mostly in 2020. It uses Vue, hapi.js, and
 ![Generating a key](showcase/key%20menu.png)
 ![Registration](showcase/register.png)
 
-- Change UI and separate posts based on whether the user is privileged
+- Change UI and separate posts based on user status (e.g. logged in, privileged)
 ![Post from a guest](showcase/guest%20post.png)
 
 ## License
