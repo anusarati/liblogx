@@ -69,6 +69,7 @@ export default {
       this.content = this.postHTML = mdModule.default
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_function_as_a_parameter
       .replace(/<(\/?)h(\d)>/g, (match, p1, p2) => {
+        // make <h1> inside a post start at <h3> to be smaller than top-level <h1> and <h2>
         return `<${p1}h${Math.min(Number(p2)+2, 6)}>`;
       });
     })

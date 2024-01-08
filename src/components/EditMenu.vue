@@ -8,7 +8,7 @@
             <router-link :to="`/edit/${post._id}`">{{ post.Title }}</router-link>, {{ post.author }}
           </span>
           <!-- https://vuejs.org/v2/guide/events.html -->
-          <button @click="deletePost(post._id)"><img :src="deleteIcon"></img></button>
+          <button @click="deletePost(post._id)"><img :src="deleteIcon"></button>
         </li>
       </ol>
       <ol v-else>

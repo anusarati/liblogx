@@ -60,6 +60,7 @@ export default {
       { path: "/register", component: UserRegister },
       { path: "/login", component: UserLogin }
     ]);
+    // fetch posts every minute
     window.setInterval(this.loadPosts, 60e3);
   }
 };

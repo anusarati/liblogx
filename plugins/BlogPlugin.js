@@ -22,8 +22,8 @@ if (webpackConfig.mode == "development") {
   }).on("line", (input) => {
     if (input == "r") {
       runWebpackCompiler()
-      .then(stats => console.log(stats.toString({ colors: true })))
-      .catch(console.error);
+        .then(stats => console.log(stats.toString({ colors: true })))
+        .catch(console.error);
     }
   });
 }
@@ -35,13 +35,13 @@ module.exports.plugin = {
     await server.register([UsersPlugin]);
 
     server.route({
-        method: "GET",
-        path: "/posts",
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions
-        handler(request, h) {
-          // since this works, it seems that hapi resolves promises
-          return posts.find();
-        }
+      method: "GET",
+      path: "/posts",
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions
+      handler(request, h) {
+        // since this works, it seems that hapi resolves promises
+        return posts.find();
+      }
     });
 
     server.route({
@@ -76,13 +76,21 @@ module.exports.plugin = {
       method: "POST",
       path: "/upload",
       handler(request, h) {
+        // Rename the image filename to the filename given by the user
+        let renameImage = image => {
+          fs.promises.rename(image.path, image.path.replace(/(?<=\\|\/)([^\\/]*)$/, image.filename));
+        }
         if (request.payload.img.length) {
           for (let image of request.payload.img) {
-            fs.promises.rename(image.path, image.path.replace(/\\([^\\]*)$/, `\\${image.filename}`));
+            console.log(image);
+            renameImage(image);
+            console.log(image);
           }
         } else {
           let image = request.payload.img;
-          fs.promises.rename(image.path, image.path.replace(/\\([^\\]*)$/, `\\${image.filename}`));
+          console.log(image);
+          renameImage(image);
+          console.log(image);
         }
         return h.redirect('/create');
       },
@@ -101,10 +109,10 @@ module.exports.plugin = {
 
     // either I or the author of the post can edit or delete it
     let checkAuthority = {
-        async method(request, h) {
+      async method(request, h) {
         // https://hapi.dev/tutorials/expresstohapi/?lang=en_US#-parameters
         let postID = request.params.postID;
-        let post = await posts.findOne({ _id: postID});
+        let post = await posts.findOne({ _id: postID });
         let credentials = request.auth.credentials;
         if (credentials.scope != "Author") {
           if (post.author != credentials.username) {
@@ -129,12 +137,14 @@ module.exports.plugin = {
       async handler(request, h) {
         // https://hapi.dev/tutorials/expresstohapi/?lang=en_US#-parameters
         let postID = request.pre.postID;
-        let post = await posts.findOne({ _id: postID});
+        let post = await posts.findOne({ _id: postID });
         posts.update(
           { _id: monk.id(postID) },
           // https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate
-          { $set: { Title: request.payload.Title },
-          $currentDate: { edited_on: true } }
+          {
+            $set: { Title: request.payload.Title },
+            $currentDate: { edited_on: true }
+          }
         );
 
         await fs.promises.writeFile(`posts/${postID}.md`, request.payload.content);

@@ -54,6 +54,7 @@ module.exports.plugin = {
           return h.redirect("/register");
         }
         result = await keys.findOne({ content: key });
+        console.log(result);
         if (result) {
           if (!--result.uses) { // if no more uses after decrement
             keys.remove({ _id: result._id });
